@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Style {
+  maison
+  villa
+  chalet
+  domaine
+  insolite
+  exterieur
+}
+
+enum Event {
+  apero
+  barbecue
+  anniversaire
+  mariage
+  fete
+  date
+}
+
+enum Note {
+  ONE
+  TWO
+  THREE
+  FOUR
+  FIVE
+}
+
+enum Status {
+  pending
+  canceled
+  approved
+}
+
+enum Method {
+  card
+  paypal
+}
+
+model User {
+  id_user        Int      @id @default(autoincrement())
+  email          String   @unique
+  password       String
+  changed_password DateTime?
+  profile        Profile?
+  housing        Housing[]
+  note_comment   Note_Comment[]
+  reservation Reservation[]
+}
+
+model Profile {
+  id_profile        Int      @id @default(autoincrement())
+  id_user        Int  @unique
+  first_name     String
+  last_name      String
+  birthday       DateTime
+  description    String?
+  avatar         String?
+  user           User     @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+}
+
+model Housing {
+  id_housing Int  @id @default(autoincrement())
+  id_user Int
+  title String
+  description String
+  address String
+  nb_people Int
+  start_date DateTime
+  end_date DateTime
+  price Int
+  style Style
+  event Event
+  photos String
+  user           User     @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  disponibility Housing_Disponibility[]
+  equipments String
+  reservation Reservation[]
+}
+
+model Housing_Disponibility {
+  id_housing_disponibility Int  @id @default(autoincrement())
+  id_housing Int
+  date DateTime
+  housing           Housing     @relation(fields: [id_housing], references: [id_housing], onDelete: Cascade)
+}
+
+model Note_Comment {
+  id_note_comment Int @id @default(autoincrement())
+  id_housing Int?
+  id_receiver Int?
+  id_user Int
+  comment String 
+  note Note
+  date DateTime
+  user User @relation(fields: [id_user], references: [id_user])
+}
+
+model Reservation {
+  id_reservation Int @id @default(autoincrement())
+  id_user Int
+  id_housing Int
+  start_date DateTime
+  end_date DateTime
+  status Status
+  user User @relation(fields: [id_user], references: [id_user])
+  housing           Housing     @relation(fields: [id_housing], references: [id_housing], onDelete: Cascade)
+  payment Payment?
+}
+
+model Payment {
+  id_payment Int @id @default(autoincrement())
+  id_reservation Int @unique
+  amount Int
+  method Method
+  status Status
+  reservation Reservation @relation(fields: [id_reservation], references: [id_reservation], onDelete: Cascade)
+}
