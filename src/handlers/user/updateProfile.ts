@@ -2,9 +2,18 @@ import { AppError, HttpCode } from '@/errors/AppError.js'
 import { findUser, updateProfile } from '@/services/user/index.js'
 import { Response } from 'express'
 import { profileData, uRequest } from '@/types/types.js'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-export const handleUpdateUser = async (req: uRequest, res: Response) => {
+const __filename = fileURLToPath(import.meta.url)
+
+const __dirname = path.dirname(__filename)
+
+export const handleUpdateProfile = async (req: uRequest, res: Response) => {
   const { first_name, last_name, birthday, description, avatar } = req.body
+
+  const { id } = req.params
 
   if (!first_name && !last_name && !birthday && !description && !avatar) {
     throw new AppError({
@@ -13,17 +22,35 @@ export const handleUpdateUser = async (req: uRequest, res: Response) => {
     })
   }
 
+  const { id_profile, email } = req.user
+
+  if (+id !== id_profile) {
+    throw new AppError({
+      httpCode: HttpCode.UNAUTHORIZED,
+      description: 'You are not authorized to modify this profile.',
+    })
+  }
+
+  let imgName = ''
+
+  if (typeof avatar === 'string' && avatar.startsWith('data:image/')) {
+    imgName = new Date().getTime().toString() + '.png'
+    const imgPath = path.join(__dirname, '../../../../public/images/', imgName)
+    const writeStream = fs.createWriteStream(imgPath)
+
+    const data = avatar.split(',')[1]
+    writeStream.write(data)
+  }
+
   const updatedFields: profileData = {
     ...(first_name !== undefined && { first_name }),
     ...(last_name !== undefined && { last_name }),
     ...(birthday !== undefined && { birthday }),
     ...(description !== undefined && { description }),
-    ...(avatar !== undefined && { avatar }),
+    ...(avatar !== undefined && { avatar: imgName }),
   }
 
-  const { id_user, email } = req.user
-
-  const updatedProfile = await updateProfile(id_user, updatedFields)
+  const updatedProfile = await updateProfile(+id, updatedFields)
 
   if (!updatedProfile) {
     throw new AppError({
@@ -50,8 +77,19 @@ export const handleUpdateUser = async (req: uRequest, res: Response) => {
     avatar: updatedUser.profile.avatar,
   }
 
+  const userData = {
+    id_user: updatedUser.id_user,
+    id_profile: updatedUser.profile.id_profile,
+    email: updatedUser.email,
+    first_name: updatedUser.profile.first_name,
+    last_name: updatedUser.profile.last_name,
+    birthday: updatedUser.profile.birthday,
+    description: updatedUser.profile.description,
+    avatar: updatedUser.profile.avatar,
+  }
+
   res.status(HttpCode.OK).json({
     message: 'User profile updated successfully',
-    user: updatedUser,
+    user: userData,
   })
 }

@@ -4,13 +4,13 @@ import { errorHandler } from '@/errors/ErrorHandler.js'
 import { handleCreateUser } from './handlers/user/register.js'
 import { handleLogin } from './handlers/user/login.js'
 import { authenticate } from './middlewares/authenticate.js'
-import { handleUpdateUser } from './handlers/user/updateProfile.js'
-import { handleDeleteUser } from './handlers/user/deleteProfile.js'
+import { handleUpdateProfile } from './handlers/user/updateProfile.js'
+import { handleDeleteProfile } from './handlers/user/deleteProfile.js'
 import { handleCreateHousing } from './handlers/housing/createHousing.js'
 import { handleCreateReservation } from './handlers/housing/createReservation.js'
 import { handleDeleteReservation } from './handlers/housing/deleteReservation.js'
-import { updateHousing } from './services/housing/index.js'
 import { handleUpdateHousing } from './handlers/housing/updateHousing.js'
+import { handleGetProfile } from './handlers/user/getProfile.js'
 
 const router = Router()
 
@@ -18,8 +18,9 @@ const router = Router()
 
 router.post('/api/register', handleCreateUser)
 router.post('/api/login', handleLogin)
-router.patch('/api/profile', authenticate, handleUpdateUser)
-router.delete('/api/profile', authenticate, handleDeleteUser)
+router.get('/api/profile/:id', handleGetProfile)
+router.patch('/api/profile/:id', authenticate, handleUpdateProfile)
+router.delete('/api/profile', authenticate, handleDeleteProfile)
 
 // ------- HOUSING ROUTES --------
 

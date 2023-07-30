@@ -34,6 +34,7 @@ export const authenticate = async (
 
   req.user = {
     id_user: user.id_user,
+    id_profile: user.profile.id_profile,
     email: user.email,
     token,
     first_name: user.profile.first_name,

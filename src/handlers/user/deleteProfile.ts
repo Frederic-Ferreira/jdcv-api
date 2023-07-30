@@ -3,7 +3,7 @@ import { deleteProfile } from '@/services/user/index.js'
 import { Response } from 'express'
 import { uRequest } from '@/types/types.js'
 
-export const handleDeleteUser = async (req: uRequest, res: Response) => {
+export const handleDeleteProfile = async (req: uRequest, res: Response) => {
   const { id_user } = req.user
 
   await deleteProfile(id_user)

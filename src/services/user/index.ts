@@ -14,6 +14,14 @@ function findUser(email: string) {
   })
 }
 
+function findProfile(id_profile: number) {
+  return prisma.profile.findUnique({
+    where: {
+      id_profile,
+    },
+  })
+}
+
 function createUser(
   email: string,
   password: string,
@@ -36,10 +44,10 @@ function createUser(
   })
 }
 
-function updateProfile(id_user: number, data: profileData) {
+function updateProfile(id_profile: number, data: profileData) {
   return prisma.profile.update({
     where: {
-      id_user,
+      id_profile,
     },
     data,
   })
@@ -53,4 +61,4 @@ function deleteProfile(id_user: number) {
   })
 }
 
-export { findUser, createUser, updateProfile, deleteProfile }
+export { findUser, findProfile, createUser, updateProfile, deleteProfile }

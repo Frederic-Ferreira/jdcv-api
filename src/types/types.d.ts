@@ -18,6 +18,7 @@ type Method = 'card' | 'paypal'
 
 type reqUser = {
   id_user?: number
+  id_profile?: number
   email?: string
   token?: string
   first_name?: string

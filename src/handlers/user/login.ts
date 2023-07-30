@@ -43,10 +43,13 @@ export const handleLogin = async (req: Request, res: Response) => {
     expiresIn: '1w',
   })
 
-  const clientInformations = {
+  const userData = {
+    id_user: user.id_user,
+    id_profile: user.profile.id_profile,
     email: user.email,
     first_name: user.profile.first_name,
     last_name: user.profile.last_name,
+    birthday: user.profile.birthday,
     description: user.profile.description,
     avatar: user.profile.avatar,
   }
@@ -54,6 +57,6 @@ export const handleLogin = async (req: Request, res: Response) => {
   res.status(HttpCode.OK).json({
     message: 'User successfully logged in',
     token,
-    user: clientInformations,
+    user: userData,
   })
 }
