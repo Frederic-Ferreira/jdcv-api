@@ -8,6 +8,21 @@ import {
 
 const prisma = new PrismaClient()
 
+function findHousingList(post_code) {
+  let whereCondition = {}
+
+  if (post_code) {
+    whereCondition = {
+      post_code: {
+        startsWith: post_code,
+      },
+    }
+  }
+  return prisma.housing.findMany({
+    where: whereCondition,
+  })
+}
+
 function findHousing(id_housing: number) {
   return prisma.housing.findFirst({
     where: {
@@ -112,6 +127,7 @@ function deleteReservation(id_reservation: number) {
 }
 
 export {
+  findHousingList,
   findHousing,
   createHousing,
   updateHousing,

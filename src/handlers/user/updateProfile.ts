@@ -1,14 +1,9 @@
 import { AppError, HttpCode } from '@/errors/AppError.js'
-import { findUser, updateProfile } from '@/services/user/index.js'
+import { findUserByEmail, updateProfile } from '@/services/user/index.js'
 import { Response } from 'express'
 import { profileData, uRequest } from '@/types/types.js'
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-
-const __dirname = path.dirname(__filename)
 
 export const handleUpdateProfile = async (req: uRequest, res: Response) => {
   const { first_name, last_name, birthday, description, avatar } = req.body
@@ -33,12 +28,11 @@ export const handleUpdateProfile = async (req: uRequest, res: Response) => {
 
   let imgName = ''
 
-  if (typeof avatar === 'string' && avatar.startsWith('data:image/')) {
+  if (avatar) {
     imgName = new Date().getTime().toString() + '.png'
-    const imgPath = path.join(__dirname, '../../../../public/images/', imgName)
+    const imgPath = path.join(process.cwd(), 'public/images', imgName)
     const writeStream = fs.createWriteStream(imgPath)
-
-    const data = avatar.split(',')[1]
+    const data = Buffer.from(avatar, 'base64')
     writeStream.write(data)
   }
 
@@ -59,7 +53,7 @@ export const handleUpdateProfile = async (req: uRequest, res: Response) => {
     })
   }
 
-  const updatedUser = await findUser(email)
+  const updatedUser = await findUserByEmail(email)
 
   if (JSON.stringify(updatedProfile) !== JSON.stringify(updatedUser.profile)) {
     throw new AppError({

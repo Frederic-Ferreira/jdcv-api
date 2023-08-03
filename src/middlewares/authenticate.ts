@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express'
 import { uRequest } from '@/types/types.js'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { AppError, HttpCode } from '@/errors/AppError.js'
-import { findUser } from '@/services/user/index.js'
+import { findUserByEmail } from '@/services/user/index.js'
 
 export const authenticate = async (
   req: uRequest,
@@ -23,7 +23,7 @@ export const authenticate = async (
     process.env.JWT_SECRET as string,
   ) as JwtPayload
 
-  const user = await findUser(decoded.email)
+  const user = await findUserByEmail(decoded.email)
 
   if (!user.profile) {
     throw new AppError({

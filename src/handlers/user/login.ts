@@ -1,5 +1,5 @@
 import { AppError, HttpCode } from '@/errors/AppError.js'
-import { findUser } from '@/services/user/index.js'
+import { findUserByEmail } from '@/services/user/index.js'
 import { Response, Request } from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -14,7 +14,7 @@ export const handleLogin = async (req: Request, res: Response) => {
     })
   }
 
-  const user = await findUser(email)
+  const user = await findUserByEmail(email)
 
   if (!user) {
     throw new AppError({

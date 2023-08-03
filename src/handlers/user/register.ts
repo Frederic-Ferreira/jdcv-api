@@ -1,5 +1,5 @@
 import { AppError, HttpCode } from '@/errors/AppError.js'
-import { createUser, findUser } from '@/services/user/index.js'
+import { createUser, findUserByEmail } from '@/services/user/index.js'
 import { Response, Request } from 'express'
 import bcrypt from 'bcryptjs'
 
@@ -13,7 +13,7 @@ export const handleCreateUser = async (req: Request, res: Response) => {
     })
   }
 
-  const existingUser = await findUser(email)
+  const existingUser = await findUserByEmail(email)
 
   if (existingUser) {
     throw new AppError({

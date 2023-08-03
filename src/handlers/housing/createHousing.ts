@@ -5,6 +5,8 @@ import {
   createHousing,
   createHousingDisponibility,
 } from '@/services/housing/index.js'
+import fs from 'fs'
+import path from 'path'
 
 export const handleCreateHousing = async (req: uRequest, res: Response) => {
   const { id_user } = req.user
@@ -13,28 +15,34 @@ export const handleCreateHousing = async (req: uRequest, res: Response) => {
     title,
     description,
     address,
+    post_code,
+    gps,
+    region,
     nb_people,
+    nb_room,
     start_date,
     end_date,
     price,
     style,
-    event,
     photos,
-    equipments,
+    events,
   } = req.body
 
   if (
     !title ||
     !description ||
     !address ||
+    !post_code ||
+    !gps ||
+    !region ||
     !nb_people ||
+    !nb_room ||
     !start_date ||
     !end_date ||
     !price ||
     !style ||
-    !event ||
     !photos ||
-    !equipments
+    !events
   ) {
     new AppError({
       httpCode: HttpCode.BAD_REQUEST,
@@ -43,14 +51,28 @@ export const handleCreateHousing = async (req: uRequest, res: Response) => {
     })
   }
 
-  const startDate = new Date(start_date)
-  const endDate = new Date(end_date)
+  let imgsName = ''
 
-  if (endDate <= startDate) {
-    throw new AppError({
-      httpCode: HttpCode.BAD_REQUEST,
-      description: 'The end date must be after the start date',
-    })
+  if (photos !== '') {
+    const photosData = photos.split('\n\n')
+    const housingDir = path.join(process.cwd(), 'public/images')
+
+    for (let i = 0; i < photosData.length; i++) {
+      const name = new Date().getTime().toString() + '.png'
+      imgsName += `${name}${i !== photosData.length - 1 ? ',' : ''}`
+      const imgPath = path.join(housingDir, name)
+      const data = Buffer.from(photosData[i], 'base64')
+
+      try {
+        await fs.writeFile(imgPath, data, () => {})
+      } catch (error) {
+        console.error(`Error saving photo: ${error.message}`)
+        throw new AppError({
+          httpCode: HttpCode.INTERNAL_SERVER_ERROR,
+          description: `Error saving photo: ${error.message}`,
+        })
+      }
+    }
   }
 
   const housingData = {
@@ -58,14 +80,17 @@ export const handleCreateHousing = async (req: uRequest, res: Response) => {
     title,
     description,
     address,
+    post_code,
+    gps,
+    region,
     nb_people,
+    nb_room,
     start_date,
     end_date,
     price,
     style,
-    event,
-    photos,
-    equipments,
+    photos: imgsName,
+    events,
   }
 
   const housing = await createHousing(housingData)
@@ -76,6 +101,9 @@ export const handleCreateHousing = async (req: uRequest, res: Response) => {
       description: 'Error while creating housing',
     })
   }
+
+  const startDate = new Date(start_date)
+  const endDate = new Date(end_date)
 
   const currentDate = new Date(startDate)
 

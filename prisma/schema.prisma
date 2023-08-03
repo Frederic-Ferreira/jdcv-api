@@ -10,22 +10,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Region {
+  auvergne_rhone_alpes
+  bourgogne_franche_comte
+  bretagne
+  centre_val_de_loire
+  corse
+  grand_est
+  hauts_de_france
+  ile_de_france
+  normandie
+  nouvelle_aquitaine
+  occitanie
+  pays_de_la_loire
+  provence_alpes_cote_d_azur
+  guadeloupe
+  martinique
+  guyane
+  la_reunion
+  mayotte
+}
+
 enum Style {
   maison
-  villa
-  chalet
+  hangar
   domaine
   insolite
   exterieur
-}
-
-enum Event {
-  apero
-  barbecue
-  anniversaire
-  mariage
-  fete
-  date
+  appartement
+  grange
+  chalet
+  villa
+  autre
 }
 
 enum Note {
@@ -75,16 +91,19 @@ model Housing {
   title String
   description String
   address String
+  post_code String
   nb_people Int
+  nb_room Int
   start_date DateTime
   end_date DateTime
   price Int
   style Style
-  event Event
+  events String
   photos String
+  region Region
+  gps String
   user           User     @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
   disponibility Housing_Disponibility[]
-  equipments String
   reservation Reservation[]
 }
 

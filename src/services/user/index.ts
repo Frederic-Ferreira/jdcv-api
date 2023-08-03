@@ -3,10 +3,21 @@ import { profileData } from '@/types/types.js'
 
 const prisma = new PrismaClient()
 
-function findUser(email: string) {
+function findUserByEmail(email: string) {
   return prisma.user.findUnique({
     where: {
       email,
+    },
+    include: {
+      profile: true,
+    },
+  })
+}
+
+function findUserById(id_user: number) {
+  return prisma.user.findUnique({
+    where: {
+      id_user,
     },
     include: {
       profile: true,
@@ -61,4 +72,11 @@ function deleteProfile(id_user: number) {
   })
 }
 
-export { findUser, findProfile, createUser, updateProfile, deleteProfile }
+export {
+  findUserById,
+  findUserByEmail,
+  findProfile,
+  createUser,
+  updateProfile,
+  deleteProfile,
+}

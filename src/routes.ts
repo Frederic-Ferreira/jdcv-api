@@ -11,6 +11,8 @@ import { handleCreateReservation } from './handlers/housing/createReservation.js
 import { handleDeleteReservation } from './handlers/housing/deleteReservation.js'
 import { handleUpdateHousing } from './handlers/housing/updateHousing.js'
 import { handleGetProfile } from './handlers/user/getProfile.js'
+import { handleGetHousingList } from './handlers/housing/getHousingList.js'
+import { handleGetHousing } from './handlers/housing/getHousing.js'
 
 const router = Router()
 
@@ -24,14 +26,12 @@ router.delete('/api/profile', authenticate, handleDeleteProfile)
 
 // ------- HOUSING ROUTES --------
 
+router.get('/api/housing/:id', handleGetHousing)
+router.get('/api/housing', handleGetHousingList)
 router.post('/api/housing', authenticate, handleCreateHousing)
 router.patch('/api/housing', authenticate, handleUpdateHousing)
 router.post('/api/reservation', authenticate, handleCreateReservation)
 router.delete('/api/reservation', authenticate, handleDeleteReservation)
-
-router.get('/api/test', authenticate, (_, res: Response) =>
-  res.json({ message: 'Hello' }),
-)
 
 // router.get('/user/:id', async (_, res: Response) => {
 //   if (!res.locals.user) {

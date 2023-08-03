@@ -5,6 +5,7 @@ import { createHttpTerminator } from 'http-terminator'
 import { PrismaClient } from '@prisma/client'
 import router from './src/routes.js'
 import cors from 'cors'
+import path from 'path'
 import './src/process.js'
 
 const app: Application = express()
@@ -26,6 +27,10 @@ async function testDBConnection() {
   }
 }
 
+app.use(
+  '/api/images',
+  express.static(path.join(process.cwd(), 'public/images')),
+)
 app.use(express.json({ limit: '50mb' }))
 app.use(cors())
 app.use(router)

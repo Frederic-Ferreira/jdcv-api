@@ -1,14 +1,36 @@
 import { Request } from 'express'
 
+type Region =
+  | 'auvergne_rhone_alpes'
+  | 'bourgogne_franche_comte'
+  | 'bretagne'
+  | 'centre_val_de_loire'
+  | 'corse'
+  | 'grand_est'
+  | 'hauts_de_france'
+  | 'ile_de_france'
+  | 'normandie'
+  | 'nouvelle_aquitaine'
+  | 'occitanie'
+  | 'pays_de_la_loire'
+  | 'provence_alpes_cote_d_azur'
+  | 'guadeloupe'
+  | 'martinique'
+  | 'guyane'
+  | 'la_reunion'
+  | 'mayotte'
+
 type Style =
   | 'maison'
-  | 'villa'
-  | 'chalet'
+  | 'hangar'
   | 'domaine'
   | 'insolite'
   | 'exterieur'
-
-type Event = 'apero' | 'barbecue' | 'anniversaire' | 'mariage' | 'fete' | 'date'
+  | 'appartement'
+  | 'grange'
+  | 'chalet'
+  | 'villa'
+  | 'autre'
 
 type Note = 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE'
 
@@ -46,14 +68,17 @@ export type updateHousingData = {
   title?: string
   description?: string
   address?: string
+  post_code?: string
+  gps?: string
+  region?: Region
   nb_people?: number
+  nb_room?: number
   start_date?: Date
   end_date?: Date
   price?: number
   style?: Style
-  event?: Event
+  events?: string
   photos?: string
-  equipments?: string
 }
 
 export type createHousingData = {
@@ -61,14 +86,17 @@ export type createHousingData = {
   title: string
   description: string
   address: string
+  post_code: string
+  gps: string
+  region: Region
   nb_people: number
+  nb_room: number
   start_date: Date
   end_date: Date
   price: number
   style: Style
-  event: Event
+  events: string
   photos: string
-  equipments: string
 }
 
 export type createHousingDisponibilityData = {
