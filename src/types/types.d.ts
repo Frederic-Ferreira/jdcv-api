@@ -77,7 +77,7 @@ export type updateHousingData = {
   end_date?: Date
   price?: number
   style?: Style
-  events?: string
+  events?: string[]
   photos?: string
 }
 
@@ -95,7 +95,7 @@ export type createHousingData = {
   end_date: Date
   price: number
   style: Style
-  events: string
+  events: string[]
   photos: string
 }
 

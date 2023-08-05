@@ -98,7 +98,7 @@ model Housing {
   end_date DateTime
   price Int
   style Style
-  events String
+  events String[]
   photos String
   region Region
   gps String
