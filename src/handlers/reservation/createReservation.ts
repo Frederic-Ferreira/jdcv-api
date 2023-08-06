@@ -1,28 +1,16 @@
 import { Response } from 'express'
 import { uRequest } from '@/types/types.js'
 import { AppError, HttpCode } from '@/errors/AppError.js'
-import {
-  findHousingDisponibility,
-  deleteHousingDisponibility,
-  createReservation,
-} from '@/services/housing/index.js'
+import { createReservation } from '@/services/reservation/index.js'
+import { findHousingDisponibility } from '@/services/housing/index.js'
 import { createReservationData } from '@/types/types.js'
-import { Status } from '@prisma/client'
 
 export const handleCreateReservation = async (req: uRequest, res: Response) => {
   const { id_user } = req.user
 
-  const { id_housing, start_date, end_date, method, amount, payment_status } =
-    req.body
+  const { id_housing, start_date, end_date } = req.body
 
-  if (
-    !id_housing ||
-    !start_date ||
-    !end_date ||
-    !method ||
-    !amount ||
-    !payment_status
-  ) {
+  if (!id_housing || !start_date || !end_date) {
     throw new AppError({
       httpCode: HttpCode.BAD_REQUEST,
       description: 'Missing parameters',
@@ -57,21 +45,14 @@ export const handleCreateReservation = async (req: uRequest, res: Response) => {
     currentDate.setDate(currentDate.getDate() + 1)
   }
 
-  let status = 'pending'
-
-  if (payment_status === 'approved') {
-    status = 'approved'
-  }
+  const status = 'pending'
 
   const reservationData = {
     id_user,
     id_housing,
-    start_date,
-    end_date,
+    start_date: new Date(start_date),
+    end_date: new Date(end_date),
     status,
-    method,
-    amount,
-    payment_status,
   } as createReservationData
 
   const reservation = await createReservation(reservationData)
@@ -81,15 +62,6 @@ export const handleCreateReservation = async (req: uRequest, res: Response) => {
       httpCode: HttpCode.INTERNAL_SERVER_ERROR,
       description: 'Error while creating the reservation',
     })
-  }
-
-  if (reservation.status === Status.approved) {
-    const currentDate = new Date(startDate)
-    while (currentDate <= endDate) {
-      await deleteHousingDisponibility(id_housing, currentDate)
-
-      currentDate.setDate(currentDate.getDate() + 1)
-    }
   }
 
   res.status(HttpCode.OK).json({

@@ -51,7 +51,7 @@ export const handleCreateHousing = async (req: uRequest, res: Response) => {
     })
   }
 
-  let imgsName = ''
+  const imgsName = []
 
   if (photos !== '') {
     const photosData = photos.split('\n\n')
@@ -59,7 +59,7 @@ export const handleCreateHousing = async (req: uRequest, res: Response) => {
 
     for (let i = 0; i < photosData.length; i++) {
       const name = new Date().getTime().toString() + '.png'
-      imgsName += `${name}${i !== photosData.length - 1 ? ',' : ''}`
+      imgsName.push(name)
       const imgPath = path.join(housingDir, name)
       const data = Buffer.from(photosData[i], 'base64')
 

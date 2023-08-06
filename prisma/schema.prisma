@@ -99,7 +99,7 @@ model Housing {
   price Int
   style Style
   events String[]
-  photos String
+  photos String[]
   region Region
   gps String
   user           User     @relation(fields: [id_user], references: [id_user], onDelete: Cascade)

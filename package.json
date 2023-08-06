@@ -43,6 +43,7 @@
     "hpp": "^0.2.3",
     "http-terminator": "^3.2.0",
     "jsonwebtoken": "^9.0.1",
+    "stripe": "^12.17.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0"
   }

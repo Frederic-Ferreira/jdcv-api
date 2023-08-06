@@ -78,7 +78,7 @@ export type updateHousingData = {
   price?: number
   style?: Style
   events?: string[]
-  photos?: string
+  photos?: string[]
 }
 
 export type createHousingData = {
@@ -96,7 +96,7 @@ export type createHousingData = {
   price: number
   style: Style
   events: string[]
-  photos: string
+  photos: string[]
 }
 
 export type createHousingDisponibilityData = {
@@ -110,7 +110,25 @@ export type createReservationData = {
   start_date: Date
   end_date: Date
   status: Status
-  method: Method
+}
+
+export type updateReservationData = {
+  start_date?: Date
+  end_date?: Date
+  status?: Status
+  method?: Method
+  amount?: number
+  payment_status?: Status
+}
+
+export type stripeSessionData = {
+  price: number
+  id: number
+}
+
+export type paymentData = {
+  id_reservation: number
   amount: number
-  payment_status: Status
+  method: Method
+  status: Status
 }

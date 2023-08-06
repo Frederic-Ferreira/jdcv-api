@@ -4,9 +4,9 @@ import { AppError, HttpCode } from '@/errors/AppError.js'
 import {
   findReservation,
   deleteReservation,
-  createHousingDisponibility,
   deletePayment,
-} from '@/services/housing/index.js'
+} from '@/services/reservation/index.js'
+import { createHousingDisponibility } from '@/services/housing/index.js'
 
 export const handleDeleteReservation = async (req: uRequest, res: Response) => {
   const { id_user } = req.user

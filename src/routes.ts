@@ -7,12 +7,14 @@ import { authenticate } from './middlewares/authenticate.js'
 import { handleUpdateProfile } from './handlers/user/updateProfile.js'
 import { handleDeleteProfile } from './handlers/user/deleteProfile.js'
 import { handleCreateHousing } from './handlers/housing/createHousing.js'
-import { handleCreateReservation } from './handlers/housing/createReservation.js'
-import { handleDeleteReservation } from './handlers/housing/deleteReservation.js'
+import { handleCreateReservation } from './handlers/reservation/createReservation.js'
+import { handleDeleteReservation } from './handlers/reservation/deleteReservation.js'
 import { handleUpdateHousing } from './handlers/housing/updateHousing.js'
 import { handleGetProfile } from './handlers/user/getProfile.js'
 import { handleGetHousingList } from './handlers/housing/getHousingList.js'
 import { handleGetHousing } from './handlers/housing/getHousing.js'
+import { handleCreateStripeSession } from './handlers/reservation/stripeSession.js'
+import { handleUpdateReservation } from './handlers/reservation/updateReservation.js'
 
 const router = Router()
 
@@ -30,33 +32,18 @@ router.get('/api/housing/:id', handleGetHousing)
 router.get('/api/housing', handleGetHousingList)
 router.post('/api/housing', authenticate, handleCreateHousing)
 router.patch('/api/housing', authenticate, handleUpdateHousing)
+
+// ------- RESERVATION ROUTES --------
+
+router.post('/api/stripe/:id', authenticate, handleCreateStripeSession)
 router.post('/api/reservation', authenticate, handleCreateReservation)
+router.patch('/api/reservation/:id', authenticate, handleUpdateReservation)
 router.delete('/api/reservation', authenticate, handleDeleteReservation)
 
-// router.get('/user/:id', async (_, res: Response) => {
-//   if (!res.locals.user) {
-//     throw new AppError({
-//       httpCode: HttpCode.UNAUTHORIZED,
-//       description: 'You must be logged in',
-//       isOperational: true,
-//     })
-//   }
-
-//   const user = await getUserFromDb()
-
-//   if (!user) {
-//     throw new AppError({
-//       httpCode: HttpCode.NOT_FOUND,
-//       description: 'User you are looking for does not exist',
-//     })
-//   }
-
-//   res.json(user)
-// })
+// ------- ERROR HANDLING MIDDLEWARES --------
 
 router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log('Error encountered:', err.message || err)
-
   next(err)
 })
 

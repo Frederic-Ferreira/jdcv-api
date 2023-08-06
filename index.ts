@@ -6,6 +6,8 @@ import { PrismaClient } from '@prisma/client'
 import router from './src/routes.js'
 import cors from 'cors'
 import path from 'path'
+import Stripe from 'stripe'
+
 import './src/process.js'
 
 const app: Application = express()
@@ -15,6 +17,9 @@ export const httpTerminator = createHttpTerminator({
   server,
 })
 export const prisma = new PrismaClient()
+export const stripe = new Stripe(process.env.STRIPE_KEY, {
+  apiVersion: '2022-11-15',
+})
 
 async function testDBConnection() {
   try {
